@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Others Projects\\Test project 2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3FEC7825-5881-2957-DE96-59FD73E206E9}|Assembly-CSharp.csproj|d:\\others projects\\test project 2\\assets\\scripts\\sonicstylecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FEC7825-5881-2957-DE96-59FD73E206E9}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\sonicstylecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SonicStyleController.cs",
+              "DocumentMoniker": "D:\\Others Projects\\Test project 2\\Assets\\Scripts\\SonicStyleController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\SonicStyleController.cs",
+              "ToolTip": "D:\\Others Projects\\Test project 2\\Assets\\Scripts\\SonicStyleController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\SonicStyleController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T15:51:17.899Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

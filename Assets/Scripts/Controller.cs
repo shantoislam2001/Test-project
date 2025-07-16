@@ -2,9 +2,8 @@
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class SonicStyleController : MonoBehaviour
+public class Controller : MonoBehaviour
 {
- 
     public float maxSpeed = 12f;
     public float acceleration = 80f;
     public float friction = 30f;
@@ -30,33 +29,31 @@ public class SonicStyleController : MonoBehaviour
                     Keyboard.current.rightArrowKey.isPressed ? 1 : 0;
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
             jumpRequested = true;
-        }
 
-        // Cooldown timer
         jumpTimer -= Time.deltaTime;
     }
 
     void FixedUpdate()
     {
         // Ground detection
-        isGrounded = Mathf.Abs(rb.linearVelocity.y) < 0.05f && Mathf.Abs(transform.position.y - lastYPos) < 0.01f;
+        isGrounded = Mathf.Abs(rb.velocity.y) < 0.05f
+                     && Mathf.Abs(transform.position.y - lastYPos) < 0.01f;
         lastYPos = transform.position.y;
 
-        // Movement
+        // Horizontal movement
         float targetSpeed = moveInput * maxSpeed;
-        float speedDiff = targetSpeed - rb.linearVelocity.x;
+        float speedDiff = targetSpeed - rb.velocity.x;
         float movement = speedDiff * acceleration * Time.fixedDeltaTime;
         rb.AddForce(Vector2.right * movement);
 
-        if (Mathf.Abs(rb.linearVelocity.x) > maxSpeed)
-            rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed, rb.linearVelocity.y);
+        if (Mathf.Abs(rb.velocity.x) > maxSpeed)
+            rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * maxSpeed, rb.velocity.y);
 
-        // Jumping
+        // Jump
         if (jumpRequested && isGrounded && jumpTimer <= 0)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpRequested = false;
             jumpTimer = jumpCooldown;
         }
@@ -67,7 +64,8 @@ public class SonicStyleController : MonoBehaviour
 
         if (moveInput == 0 && isGrounded)
         {
-            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, friction * Time.fixedDeltaTime), rb.linearVelocity.y);
+            float newX = Mathf.MoveTowards(rb.velocity.x, 0, friction * Time.fixedDeltaTime);
+            rb.velocity = new Vector2(newX, rb.velocity.y);
         }
     }
 }
