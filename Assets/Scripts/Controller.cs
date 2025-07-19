@@ -7,9 +7,11 @@ public class Controller : MonoBehaviour
     public float maxSpeed = 12f;
     public float acceleration = 80f;
     public float friction = 30f;
+    public float braking = 50f;
 
     public float jumpForce = 15f;
     public float jumpCooldown = 0.1f;
+    public float coyoteTime = 0.5f;
 
     private Rigidbody2D rb;
     private float moveInput;
@@ -17,6 +19,7 @@ public class Controller : MonoBehaviour
     private bool isGrounded;
     private float lastYPos;
     private float jumpTimer;
+    private float lastGroundedTime;
 
     void Awake()
     {
@@ -36,22 +39,47 @@ public class Controller : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Ground detection
-        isGrounded = Mathf.Abs(rb.velocity.y) < 0.05f
-                     && Mathf.Abs(transform.position.y - lastYPos) < 0.01f;
+        // Ground detection and coyote time tracking
+        bool onFlat = Mathf.Abs(rb.velocity.y) < 0.05f
+                      && Mathf.Abs(transform.position.y - lastYPos) < 0.01f;
+        if (onFlat)
+        {
+            isGrounded = true;
+            lastGroundedTime = Time.time;
+        }
+        else
+        {
+            isGrounded = false;
+        }
         lastYPos = transform.position.y;
 
         // Horizontal movement
         float targetSpeed = moveInput * maxSpeed;
         float speedDiff = targetSpeed - rb.velocity.x;
-        float movement = speedDiff * acceleration * Time.fixedDeltaTime;
+
+        float accelRate;
+        if (moveInput == 0)
+        {
+            accelRate = friction;            
+        }
+        else if (Mathf.Sign(moveInput) != Mathf.Sign(rb.velocity.x))
+        {
+            accelRate = braking;             
+        }
+        else
+        {
+            accelRate = acceleration;        
+        }
+
+        float movement = speedDiff * accelRate * Time.fixedDeltaTime;
         rb.AddForce(Vector2.right * movement);
 
         if (Mathf.Abs(rb.velocity.x) > maxSpeed)
             rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * maxSpeed, rb.velocity.y);
 
         // Jump
-        if (jumpRequested && isGrounded && jumpTimer <= 0)
+        bool canUseCoyote = Time.time - lastGroundedTime <= coyoteTime;
+        if (jumpRequested && (isGrounded || canUseCoyote) && jumpTimer <= 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpRequested = false;
@@ -60,12 +88,6 @@ public class Controller : MonoBehaviour
         else
         {
             jumpRequested = false;
-        }
-
-        if (moveInput == 0 && isGrounded)
-        {
-            float newX = Mathf.MoveTowards(rb.velocity.x, 0, friction * Time.fixedDeltaTime);
-            rb.velocity = new Vector2(newX, rb.velocity.y);
         }
     }
 }
